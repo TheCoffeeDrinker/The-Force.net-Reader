@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+	<link rel="stylesheet" href="css/v3-style.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://raw.github.com/davatron5000/FitVids.js/master/jquery.fitvids.js"></script>
+    <script src="https://platform.twitter.com/widgets.js"></script>
+</head>
+<body>
+
+	<script type="text/javascript">
+	 
+			document.write(news);
+			
+			String.prototype.startsWith = function(str) {
+				return (this.match("^"+str)==str)
+			}
+			
+			$("div.news-teaser-footer").empty();
+	        //fix the youtube url putting the http
+	        var embeddedVideos = $("iframe");
+	        var httpPrefix = "http:";
+	        for(var i=0;i<embeddedVideos.length;i++){
+	            var partialVideoUrl = $(embeddedVideos[i]).attr("src");
+	            if(!partialVideoUrl.startsWith(httpPrefix)){
+	            	$(embeddedVideos[i]).attr("src",httpPrefix+partialVideoUrl);
+	            }
+	        }
+	        //fix the related links putting the right domain
+	        var relatedLinks = $(".related-story a");
+	        for(var i=0;i<relatedLinks.length;i++){
+	            var partialLink = $(relatedLinks[i]).attr("href");
+	            $(relatedLinks[i]).attr("href","http://www.theforce.net"+ partialLink);
+	        }
+	        $(".news-teaser-content").fitVids();
+	               
+	</script>
+	
+</body>
+</html>

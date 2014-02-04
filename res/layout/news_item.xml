@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:PicLoader="http://schemas.android.com/apk/res/com.thecoffeedrinker.theforcereader"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="70dp"
+    android:padding="7dp"
+    android:background="@drawable/list_background">
+    
+	<ImageView 
+	    android:layout_width="70dp" 
+	    android:layout_height="70dp" 
+	    android:layout_centerVertical="true"
+   		android:layout_marginLeft="3dp" 
+   		android:layout_marginRight="7dp" 
+   		android:id="@+id/thumbnail"
+   		android:src="@drawable/tf_logo"/> 
+   		
+    <TextView 
+        android:text="I am your father" 
+        android:id="@+id/textTitle" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+    	android:textColor="@color/Title" 
+    	android:textStyle="bold" 
+    	android:layout_toRightOf="@id/thumbnail" 
+    	android:paddingLeft="4dp"/>
+    
+	<TextView 
+	    android:text="May the force be with you" 
+	    android:id="@+id/textDescription" 
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content" 
+		android:layout_below="@id/textTitle" 
+		android:textColor="@android:color/black"  
+		android:paddingTop="4dp" 
+		android:layout_toRightOf="@id/thumbnail" 
+		android:paddingLeft="4dp"/>
+	
+</RelativeLayout>

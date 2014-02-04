@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/The_Force_Reader_Style"
+	android:id="@+id/news_panel"> 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
+        
+        <fragment
+        	android:id="@+id/news_list_fragment"
+        	android:name="com.thecoffeedrinker.theforcereader.NewsListFragment"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.4"
+         />
+            
+       <fragment
+    		android:id="@+id/article_fragment"
+        	android:name="com.thecoffeedrinker.theforcereader.ArticleFragment"
+        	android:layout_width="0dp"
+        	android:layout_height="fill_parent"
+        	android:layout_weight="0.6" 
+        	android:background="@android:color/white"
+        />
+ 	</LinearLayout>
+</RelativeLayout>

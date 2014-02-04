@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/disconn_layout"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" 
+        android:gravity="center">
+            <LinearLayout 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:orientation="horizontal" 
+                android:id="@+id/disconn_message">
+  		
+	  			<ImageView 
+	  			    android:layout_height="55dp" 
+	  			    android:layout_width="55dp" 
+	  			    android:id="@+id/warning_image" 
+	  			    android:src="@drawable/warning" 
+	  			 	android:scaleType="fitXY" /> 
+  			 	
+  				<TextView 
+  				    android:textSize="20sp" 
+  				    android:gravity="center" 
+  				    android:layout_width="wrap_content" 
+  				    android:textColor="@android:color/black" 
+  				    android:id="@+id/unConnected_message" 
+  					android:layout_height="wrap_content" 
+  					android:text="@string/unconnected_message" android:layout_gravity="bottom" android:layout_marginLeft="5dp" 
+  					android:layout_marginBottom="6dp"/>
+  			</LinearLayout>
+
+	  	<Button
+	  	    android:id="@+id/connect_button"
+	  	    android:layout_width="125dp"
+	  	    android:layout_height="wrap_content"
+	  	    android:gravity="center"
+	  	    android:text="@string/retry_label"
+	  	    android:textSize="18sp"
+	  	    android:layout_marginTop="5dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

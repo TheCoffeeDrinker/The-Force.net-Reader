@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TheForce.Net Reader</string>
+    <string name="title_bar_label">TheForce.Net</string>
+    <string name="refresh_menu_label">Refresh</string>
+    <string name="unconnected_message">The connection is not available</string>
+    <string name="retry_label">Retry</string>
+    <string name="header_description">Header of the Application</string>
+    <string name="share_menu_label">Share</string>
+    <string name="notification_setting_title">News Notifications</string>
+    <string name="notification_setting_summary">Send a notification every time a new news is published</string>
+    <string name="dialog_connection_title">Connection</string>
+    <string name="run_startup_setting_title">Run at startup</string>
+    <string name="run_startup_setting_summary">Run automatically the application every time the device is switched on</string>
+	<string name="settings_menu_label">Settings</string>
+</resources>
