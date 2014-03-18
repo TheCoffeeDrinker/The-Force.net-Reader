@@ -9,14 +9,14 @@
     android:padding="7dp"
     android:background="@drawable/list_background">
     
-	<ImageView 
-	    android:layout_width="70dp" 
-	    android:layout_height="70dp" 
+	<ImageView
+	    android:id="@+id/thumbnail"
+	    android:layout_width="70dp"
+	    android:layout_height="70dp"
 	    android:layout_centerVertical="true"
-   		android:layout_marginLeft="3dp" 
-   		android:layout_marginRight="7dp" 
-   		android:id="@+id/thumbnail"
-   		android:src="@drawable/tf_logo"/> 
+	    android:layout_marginLeft="3dp"
+	    android:layout_marginRight="7dp" 
+	    android:src="@drawable/tf_logo"/>
    		
     <TextView 
         android:text="I am your father" 

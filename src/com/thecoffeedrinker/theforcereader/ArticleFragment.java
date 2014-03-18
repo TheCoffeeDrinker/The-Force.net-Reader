@@ -5,9 +5,7 @@ import java.util.List;
 
 import com.thecoffeedrinker.feedparser.Parser;
 import com.thecoffeedrinker.theforcereader.newsmanager.FeedNews;
-//import com.thecoffeedrinker.theforcereader.widget.DisconnectedViewFactory;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,52 +23,39 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ShareActionProvider;
+import android.widget.TextView;
 
+/**
+ * Fragment to show a news article previously selected; here using the menu it will be possible to share the news.
+ * @author carlo
+ *
+ */
 public class ArticleFragment extends Fragment{
 	private final String SHARING_TYPE="text/plain";
-	private WebView articleWV;
-	private RelativeLayout mainLayout;
-	private boolean isLayoutToClean;
+	private WebView articleWV; //webview that will display the news article
 	private ShareActionProvider shareAction;
 	private final static String NEWS_INDEX = "Index of the selected news";//the reference is the list
-	private ArticleLoader HTMLloaderTask;
 	
 	public static ArticleFragment newInstance(int articleIndex){
 		ArticleFragment fragment = new ArticleFragment();
-		Bundle args = new Bundle();
-		args.putInt(NEWS_INDEX, articleIndex);
-		fragment.setArguments(args);
+		if(articleIndex!=-1){
+			Bundle args = new Bundle();
+			args.putInt(NEWS_INDEX, articleIndex);
+			fragment.setArguments(args);
+		}
 		return fragment;
 	}
 	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	Activity activity=getActivity();
-     	mainLayout = new RelativeLayout(activity);
-     	if(getActivity() instanceof NewsListActivity){
-	     	ImageView rebelLogo=new ImageView(activity);
-	     	rebelLogo.setImageResource(R.drawable.fill_logo);
-	     	LinearLayout bigLogoContainer=new LinearLayout(activity);
-	     	bigLogoContainer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-	     	bigLogoContainer.setGravity(Gravity.CENTER);
-	     	bigLogoContainer.addView(rebelLogo);
-	     	mainLayout.addView(bigLogoContainer);
-	     	isLayoutToClean=true;
-     	}
-     	return mainLayout;
+     	return inflater.inflate(R.layout.article_empty, null);
     }
     
-    private void cleanLayout(){
-    	if(isLayoutToClean){
-    		mainLayout.removeViewAt(mainLayout.getChildCount()-1);
-    		isLayoutToClean=false;
-    	}
-    }
     
 	public void onActivityCreated (Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
@@ -93,8 +78,16 @@ public class ArticleFragment extends Fragment{
    	 * @param index of the news to show on the arrayList in the Application context that keeps
    	 * every news
    	 */
-    private void showArticle(int index){
-    	articleWV=new WebView(getActivity());
+    public void showArticle(int index){
+    	if(getView().getTag()==null){
+    		LayoutInflater inflater = getLayoutInflater(getArguments());
+    		FrameLayout fragView = (FrameLayout) getView();
+    		fragView.removeAllViews();
+    		FrameLayout articleView = (FrameLayout) inflater.inflate(R.layout.article, null);
+    		fragView.setTag(true);
+    		fragView.addView(articleView);
+    	}
+    	articleWV=(WebView) getView().findViewById(R.id.articleView);
     	articleWV.setWebChromeClient(new WebChromeClient() {
     	});
 		WebSettings settings = articleWV.getSettings();
@@ -104,26 +97,31 @@ public class ArticleFragment extends Fragment{
     	List<FeedNews> newsList = context.getNewsRetrieved();
     	FeedNews newsToShow = newsList.get(index); 
     	if(Parser.Util.isNetworkAvailable(getActivity())){
-    		HTMLloaderTask = new ArticleLoader();
+    		ArticleLoader HTMLloaderTask = new ArticleLoader();
     		HTMLloaderTask.execute(newsToShow);
     	}
     }
     
-
+    /**
+     * Asynchtask to retrieve the html article from the web page, since this is an heavy operation; when this will
+     * be done it will be loaded into the webview of the fragment
+     * @author carlo
+     *
+     */
 	private class ArticleLoader extends AsyncTask<FeedNews, Void, String>{
 		private FeedNews newsToShow;
 		private final static String JS_OBJECT_NAME="news";
-		
+		FrameLayout newsLayout;
 		
 		protected void onPreExecute(){
-			cleanLayout();
+			articleWV.clearView();
 			ProgressBar loadingView=new ProgressBar(getActivity(),null,android.R.attr.progressBarStyleLarge);
 			LayoutParams progressParam=new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			loadingView.setIndeterminate(true);
-			progressParam.addRule(RelativeLayout.CENTER_IN_PARENT);
+			progressParam.gravity = Gravity.CENTER;
 			loadingView.setLayoutParams(progressParam);
-			mainLayout.addView(loadingView);
-			isLayoutToClean=true;
+			newsLayout = (FrameLayout) getView();
+			newsLayout.addView(loadingView);
 			
 		}
 		
@@ -140,33 +138,28 @@ public class ArticleFragment extends Fragment{
 		}
 		
 		protected void onPostExecute(String htmlNewsBody){
-			cleanLayout();
+			
 			if(htmlNewsBody!=null){ 
 				articleWV.addJavascriptInterface(htmlNewsBody, JS_OBJECT_NAME);
+				//load the local page; inside that put the news content using an object
 				articleWV.loadUrl("file:///android_asset/www/news_page.html");
-				//messo questo if per evitare di riaggiungere la webview, per i tablet.
-				if(mainLayout.getChildCount()==0){
-					mainLayout.addView(articleWV,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					if(shareAction!=null){
-						shareAction.setShareIntent(getSharingIntent(newsToShow.getTitle(), newsToShow.getAddress()));
-					}
+				//This line is used to avoid trouble of overlay for tablets
+				if(shareAction!=null){
+					shareAction.setShareIntent(getSharingIntent(newsToShow.getTitle(), newsToShow.getAddress()));
 				}
+				newsLayout.removeViewAt(newsLayout.getChildCount()-1);
 			}
 		}
     	
     }
 
-	public void onPause(){
-		super.onPause();
-		if(HTMLloaderTask!=null){
-			HTMLloaderTask.cancel(true);
-		}
-		if(articleWV!=null){
-			articleWV.loadUrl("file:///android_asset/nonexistent.html");
-		}
-	}
 	
-	
+	/**
+	 *  Get the proper intent to share the news
+	 * @param title the news title
+	 * @param address the address title
+	 * @return the intent that will be use when the user will touch the share menu
+	 */
 	private Intent getSharingIntent(String title, String address){
 		Intent sharingIntent = new Intent(Intent.ACTION_SEND);
 		sharingIntent.setType(SHARING_TYPE);
@@ -188,11 +181,10 @@ public class ArticleFragment extends Fragment{
 
 	
 	public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
-		if(hasNews()){
-			inflater.inflate(R.menu.article_menu, menu);
-			MenuItem item=menu.findItem(R.id.menu_share_article);
-			shareAction=(ShareActionProvider)item.getActionProvider();
-		}
+		inflater.inflate(R.menu.article_menu, menu);
+		MenuItem item=menu.findItem(R.id.menu_share_article);
+		shareAction=(ShareActionProvider)item.getActionProvider();
+		
 	}
 	
 	

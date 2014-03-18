@@ -22,16 +22,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-
+/**
+ * Main activity to show the list of news and, if the user is using a tablet on landscape, the news article selected
+ * will be shown on the left of the screen
+ * @author carlo
+ *
+ */
 public class NewsListActivity extends FragmentActivity implements NewsListFragment.OnNewsSelectedListener{
 	public static final String NEWS_TO_SHOW_EXTRA_KEY="News selected by the User";
-	private boolean dualScreen;
+	private boolean dualScreen;//if the activity is displaying both the news list and the news
 	private List<FeedNews> newsRetrieved;
 	private NewsReaderContext context;
 	private NewsHandler newsReceiver;
 	private NewsListFragment listFragment;
     private final static int ARTICLE_ACTIVITY_REQ_CODE=0;
-    private int indexNewsSelected;//used to update the news
+    private int indexNewsSelected = NO_NEWS_SELECTED_INDEX;//used to update the news
     private final static int NO_NEWS_SELECTED_INDEX = -1;
     private final static String SELECTED_NEWS_INDEX_ON_SAVE_KEY="Index of the news Selected";
 	private PullToRefreshListView mPullListView;
@@ -63,8 +68,6 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 				refresh();
 			}
 		});
-        
-    	
     }
     
     public List<FeedNews> getNewsRetrieved(){
@@ -74,25 +77,20 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     private void initActivity(Bundle savedInstanceState){
     	super.setContentView(R.layout.main);
     	newsRetrieved= context.getNewsRetrieved();
-    	Fragment articleFragShown=getSupportFragmentManager().findFragmentById(R.id.article_fragment);
-    	dualScreen= (!(articleFragShown==null || !articleFragShown.isInLayout()));
+    	View articleView = findViewById(R.id.article_fragment);
+    	dualScreen= (!(articleView==null));
         newsReceiver=new NewsHandler();
     	Messenger newsMessenger=new Messenger(newsReceiver);
     	context.setActivityMessenger(newsMessenger);
     	listFragment=(NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.news_list_fragment);
-		startService(new Intent(this, LatestNewsRetrService.class));
-		if(Parser.Util.isNetworkAvailable(this)) {
-    		listFragment.loadList(newsRetrieved); 
-    	}
     	if(savedInstanceState!=null){
-    		if(savedInstanceState.containsKey(SELECTED_NEWS_INDEX_ON_SAVE_KEY)){
-    			indexNewsSelected=savedInstanceState.getInt(SELECTED_NEWS_INDEX_ON_SAVE_KEY);
-    			if(dualScreen){
-    				onNewsSelected(indexNewsSelected);
-    			}
-    		}
-    	}else{
-    		indexNewsSelected = NO_NEWS_SELECTED_INDEX;
+    		indexNewsSelected=savedInstanceState.getInt(SELECTED_NEWS_INDEX_ON_SAVE_KEY);
+    	}
+		if(Parser.Util.isNetworkAvailable(this)) {
+    		listFragment.loadList(newsRetrieved,indexNewsSelected); 
+    	}
+    	if(savedInstanceState!=null && dualScreen){
+    		onNewsSelected(indexNewsSelected);
     	}
     }
     
@@ -103,9 +101,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     
     protected void onSaveInstanceState (Bundle outState){
     	super.onSaveInstanceState(outState);
-    	if(indexNewsSelected!=NO_NEWS_SELECTED_INDEX){
-    		outState.putInt(SELECTED_NEWS_INDEX_ON_SAVE_KEY, indexNewsSelected);
-    	}
+        outState.putInt(SELECTED_NEWS_INDEX_ON_SAVE_KEY, indexNewsSelected);
     }
 	
 
@@ -113,7 +109,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     @Override
     protected void onResume(){
     	super.onResume();
-    	refresh();
+    	if(context.getNewsRetrieved()==null) refresh();
     	fillList();
     }
     
@@ -145,19 +141,18 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 	private void fillList(){
 		if(mPullListView!=null) mPullListView.onRefreshComplete();
 		newsRetrieved=context.getNewsRetrieved();
-		listFragment.loadList(newsRetrieved);
+		listFragment.loadList(newsRetrieved,indexNewsSelected);
 	}
 	
 	public void onNewsSelected(int newsIndex) {
 		indexNewsSelected=newsIndex;
 		if(dualScreen){
-			ArticleFragment articleContainerFrag = ArticleFragment.newInstance(newsIndex);
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		    ft.replace(R.id.article_fragment, articleContainerFrag);
-		    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-		    ft.addToBackStack(null);
-		    ft.commit();
+			if(newsIndex!=NO_NEWS_SELECTED_INDEX){
+				ArticleFragment articleFrag = (ArticleFragment) this.getSupportFragmentManager().findFragmentById(R.id.article_fragment);
+				articleFrag.showArticle(newsIndex);
+			}
 		}else{
+			//start the activity to read the article if there is not the fragment into the layout
 			Intent readArticle=new Intent(this, ArticleActivity.class);
 			readArticle.putExtra(NEWS_TO_SHOW_EXTRA_KEY, newsIndex);
 			startActivityForResult(readArticle,ARTICLE_ACTIVITY_REQ_CODE);

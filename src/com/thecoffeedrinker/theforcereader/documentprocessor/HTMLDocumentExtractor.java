@@ -7,6 +7,11 @@ import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 
+/**
+ * Extract relevant parts of the news (article and picture) from a news web page.
+ * @author carlo
+ *
+ */
 public class HTMLDocumentExtractor {
 	protected Source pageSource;
 	
@@ -27,6 +32,9 @@ public class HTMLDocumentExtractor {
 	
 	public String getArticle(){
 		Element articleDiv = pageSource.getFirstElementByClass("news-teaser");
+		if(articleDiv==null){
+			return "<H1>The article is not properly written; please try again later</H1>";
+		}
 		return articleDiv.toString();
 	}
 	

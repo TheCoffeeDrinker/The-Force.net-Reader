@@ -17,8 +17,8 @@
          />
             
        <fragment
+           android:name="com.thecoffeedrinker.theforcereader.ArticleFragment"
     		android:id="@+id/article_fragment"
-        	android:name="com.thecoffeedrinker.theforcereader.ArticleFragment"
         	android:layout_width="0dp"
         	android:layout_height="fill_parent"
         	android:layout_weight="0.6" 

@@ -26,6 +26,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
+/**
+ * Context for the application; this will keep public contants, settings, and the broadcast receiver for the service
+ * @author carlo
+ *
+ */
 public class NewsReaderContext extends ContextWrapper{
 	private static NewsReaderContext readerContext; 
 	private List<FeedNews> newsList;
@@ -33,7 +38,6 @@ public class NewsReaderContext extends ContextWrapper{
     private final static long REFRESH_INTERVAL=900000;
     public final static String[] ELEMENTS_TO_READ_FROM_FEED={"title","description","link"};
 	private static ServiceResultReceiver resultReceiver;
-	private LruCache<String, Bitmap> thumbnailCache;
 	public final static String BROADCAST_INTENT_ACTION="com.thecoffeedrinker.theforcereader.NEWS_BROADCAST";
 	public final static int MAX_LENGTH_FEED=16;
 	private Messenger readerMessenger;
@@ -44,7 +48,6 @@ public class NewsReaderContext extends ContextWrapper{
 		resultReceiver=new ServiceResultReceiver();
 		LocalBroadcastManager locBroadcastManager=LocalBroadcastManager.getInstance(this);
 		locBroadcastManager.registerReceiver(resultReceiver, new IntentFilter(BROADCAST_INTENT_ACTION));
-		thumbnailCache=new LruCache<String, Bitmap>(MAX_LENGTH_FEED);
 		startRetrievalService(this);
 		
 	}
@@ -56,11 +59,7 @@ public class NewsReaderContext extends ContextWrapper{
 		return readerContext;
 	}
 	
-	public LruCache<String, Bitmap> getThumbnailCache(){
-		return thumbnailCache;
-	}
 
-	
 	public List<FeedNews> getNewsRetrieved(){
 		return newsList;
 	}
@@ -70,7 +69,11 @@ public class NewsReaderContext extends ContextWrapper{
 	}
 
 	
-	
+	/**
+	 * Class that will receive the service result (a list of FeedNews)
+	 * @author carlo
+	 *
+	 */
 	public class ServiceResultReceiver extends BroadcastReceiver{	
     	
 		public void onReceive(Context context, Intent intent) {
@@ -95,6 +98,10 @@ public class NewsReaderContext extends ContextWrapper{
     	
     };
     
+    /**
+     * Start the periodical news retrieval service
+     * @param ctx application context
+     */
 	protected static void startRetrievalService(Context ctx) {
 		AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 		Intent serviceIntent=new Intent(ctx, LatestNewsRetrService.class);

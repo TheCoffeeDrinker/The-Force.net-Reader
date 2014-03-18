@@ -1,54 +1,55 @@
 package com.thecoffeedrinker.theforcereader;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment;
-
-import com.thecoffeedrinker.theforcereader.newsmanager.FeedNews;
-import com.thecoffeedrinker.theforcereader.settings.SettingsActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.util.LruCache;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.thecoffeedrinker.theforcereader.newsmanager.FeedNews;
+import com.thecoffeedrinker.theforcereader.settings.SettingsActivity;
 
+/**
+ * Show the news list
+ * @author carlo
+ *
+ */
 public class NewsListFragment extends PullToRefreshListFragment{
 	private OnNewsSelectedListener selectionListener;
-	private LruCache<String, Bitmap> thumbCache;
 	private RelativeLayout listLayout;
 	private boolean removeTopView;
-	private int selectedItem = -1;
+	private int selectedItem=-1;
 	
 	public void onAttach(Activity activity){
 		super.onAttach(activity);
 		selectionListener=(OnNewsSelectedListener)activity;
-		thumbCache=NewsReaderContext.getInstance(getActivity()).getThumbnailCache();
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this.getActivity()).build();
+		ImageLoader.getInstance().init(config);
 	}
 	
 	public interface OnNewsSelectedListener{
@@ -57,10 +58,20 @@ public class NewsListFragment extends PullToRefreshListFragment{
 	
 	public void onListItemClick(ListView l, View v, int position, long id){
 		if(((NewsListActivity)getActivity()).isSplitScreen()){
-			((NewsPreviewAdapter)getListAdapter()).notifyDataSetChanged();
+			//if there is the article section on the screen the news selected will be highlighted; using this cycle
+			//the last one will be restored to the normale state, before highlight the new one
+			for(int i = 0;i<l.getChildCount();i++){
+				View listItem = l.getChildAt(i);
+				if(listItem!=null){
+					listItem.setBackgroundColor(getResources().getColor(R.color.unselected));
+				}
+			}
+			//hightlight the element
+			v.setBackgroundColor(getResources().getColor(R.color.Selected));
+			selectedItem = position-1;
 		}
-		selectedItem = position -1;
-		selectionListener.onNewsSelected(selectedItem); 
+		//notify the selection to the activity
+		selectionListener.onNewsSelected(position-1);
 	}
 	
 	
@@ -70,11 +81,11 @@ public class NewsListFragment extends PullToRefreshListFragment{
 	}
 	
 	
-	public void loadList(List<FeedNews> newsList){
-		//if reset position is true the list must be positioned on top
+	public void loadList(List<FeedNews> newsList, int indexNewsSelected){
 		if(removeTopView){
 			listLayout.removeViewAt(listLayout.getChildCount()-1);
 		}
+		selectedItem = indexNewsSelected;
 		if(newsList!=null && getActivity()!=null){
 			NewsPreviewAdapter newsAdapter = new NewsPreviewAdapter(getActivity(), 
 					R.layout.news_item, newsList);
@@ -82,26 +93,21 @@ public class NewsListFragment extends PullToRefreshListFragment{
 		}
 	}
 	
-	public void onPause(){
-		super.onPause();
-		NewsPreviewAdapter adapter = (NewsPreviewAdapter) getListAdapter();
-		if(adapter!=null){
-			adapter.stopEveryTask();
-		}
-	}
-	
+	/**
+	 * Array Adapter for the news list
+	 * @author carlo
+	 *
+	 */
 	private class NewsPreviewAdapter extends ArrayAdapter<FeedNews> {
 		private LayoutInflater  inflater;
 		private ArrayList<FeedNews> newsPrevList;
 		private int layoutId;
-		private List<ThumbnailRetriever> thumbLoaderTaskList;
 		
 		public NewsPreviewAdapter(Context context, int layout, List<FeedNews> newsList) {
 			super(context,layout,newsList);
 			layoutId=layout;
 			newsPrevList=(ArrayList<FeedNews>) newsList;
 			inflater=LayoutInflater.from(context);
-			thumbLoaderTaskList= new ArrayList<NewsListFragment.ThumbnailRetriever>();
 		}
 		
 		public View getView(int position, View rowView, ViewGroup parent) {
@@ -117,65 +123,53 @@ public class NewsListFragment extends PullToRefreshListFragment{
 		    ImageView thumbnail=(ImageView) rowView.findViewById(R.id.thumbnail);
 		    ThumbnailRetriever thumbRetriever=new ThumbnailRetriever(thumbnail);
 		    //add the object to the queue of the task, so in case it will be interrupted.
-		    thumbLoaderTaskList.add(thumbRetriever);
 		    thumbRetriever.execute(news);
-		    if(position==selectedItem){
+		    if(position==selectedItem && ((NewsListActivity)getActivity()).isSplitScreen()){
 		    	rowView.setBackgroundColor(getResources().getColor(R.color.Selected));
+		    	//hightlight the item if it is the case
 		    }
 	        return rowView;
 		}
 		
-		public void stopEveryTask(){
-			for(ThumbnailRetriever task:thumbLoaderTaskList){
-				task.cancel(true);
-			}
-		}
     }
 	
-	private class ThumbnailRetriever extends AsyncTask<FeedNews, Void, Bitmap>{
+	/**
+	 * AsynchTask class to retrieve the thumbnail picture of an article and load it on the list (display it)
+	 * @author carlo
+	 *
+	 */
+	private class ThumbnailRetriever extends AsyncTask<FeedNews, Void, String>{
 		private ImageView imageViewToFill;
+		ImageLoader imageLoader = ImageLoader.getInstance();
+		DisplayImageOptions displayOptions = new DisplayImageOptions.Builder()
+			.cacheInMemory(true)
+			.cacheOnDisc(true)
+			.bitmapConfig(Bitmap.Config.RGB_565)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+			.showImageForEmptyUri(R.drawable.tf_logo)
+			.showImageOnFail(R.drawable.tf_logo)
+			.displayer(new FadeInBitmapDisplayer(600))
+			.build();
 		
 		public ThumbnailRetriever(ImageView imageView) {
 			imageViewToFill=imageView;
 		}
 		
 		@Override
-		protected Bitmap doInBackground(FeedNews... arg0) {
+		protected String doInBackground(FeedNews... arg0) {
 			String thumbnailUrl=null;
 			try {
 				thumbnailUrl=arg0[0].getThumbnailUrl();
-				if(thumbnailUrl!=null){
-					if(thumbnailUrl.isEmpty() ) return null;
-					Bitmap cachePicture=thumbCache.get(thumbnailUrl);
-					if(cachePicture!=null){
-						return cachePicture;
-					}else{
-						try {
-							URL pictureURL = new URL(thumbnailUrl);
-							URLConnection picConnection=pictureURL.openConnection();
-							InputStream picStream= picConnection.getInputStream();
-							Bitmap loadedPicture =BitmapFactory.decodeStream(picStream);
-							if(loadedPicture!=null){
-								thumbCache.put(thumbnailUrl, loadedPicture);
-							}
-							return loadedPicture; 
-						} catch (IOException e) {
-							Log.e(getString(R.string.app_name), e.getMessage());
-							return null;
-						}
-					}
-				}else {
-					return null;
-				}
 			} catch (IOException e) {
-				Log.e(getString(R.string.app_name),e.getMessage());
-				return null;
+				Log.e("TheForce.net Reader", e.getMessage());
 			}
+			return thumbnailUrl;
+				
 		}
 		
-		protected void onPostExecute(Bitmap result){
-			if(result!=null){
-				imageViewToFill.setImageBitmap(result);
+		protected void onPostExecute(String resultUrl){
+			if(resultUrl!=null && !resultUrl.isEmpty()){
+				imageLoader.displayImage(resultUrl, imageViewToFill, displayOptions);
 			}
 		}
 		

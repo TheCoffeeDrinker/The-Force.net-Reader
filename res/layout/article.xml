@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-	style="@style/The_Force_Reader_Style"
-	android:id="@+id/article_area">    
-	   	
-	   	<android.support.v4.view.ViewPager
-    		android:id="@+id/pager"
-    		android:layout_width="match_parent"
-    		android:layout_height="match_parent" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-</RelativeLayout>
+    <WebView
+        android:id="@+id/articleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
