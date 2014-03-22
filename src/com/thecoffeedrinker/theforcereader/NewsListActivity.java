@@ -61,13 +61,6 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 				}
 			});
         }
-        mPullListView = (PullToRefreshListView) listFragment.getPullToRefreshListView();
-		mPullListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
-
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				refresh();
-			}
-		});
     }
     
     public List<FeedNews> getNewsRetrieved(){
@@ -92,6 +85,13 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     	if(savedInstanceState!=null && dualScreen){
     		onNewsSelected(indexNewsSelected);
     	}
+        mPullListView = (PullToRefreshListView) listFragment.getPullToRefreshListView();
+		mPullListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				refresh();
+			}
+		});
     }
     
     public boolean isSplitScreen(){
@@ -141,7 +141,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 	private void fillList(){
 		if(mPullListView!=null) mPullListView.onRefreshComplete();
 		newsRetrieved=context.getNewsRetrieved();
-		listFragment.loadList(newsRetrieved,indexNewsSelected);
+		if(listFragment!=null)listFragment.loadList(newsRetrieved,indexNewsSelected);
 	}
 	
 	public void onNewsSelected(int newsIndex) {
