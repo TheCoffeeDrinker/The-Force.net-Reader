@@ -72,6 +72,11 @@ public class ArticleFragment extends Fragment{
     }
     
     
+	public void onPause(){
+		super.onPause();
+		articleWV.loadUrl("about:blank");
+	}
+    
 	
    	/**
    	 * Display the news on the frontend
