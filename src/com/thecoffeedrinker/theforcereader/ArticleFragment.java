@@ -57,8 +57,8 @@ public class ArticleFragment extends Fragment{
     }
     
     
-	public void onActivityCreated (Bundle savedInstanceState){
-		super.onActivityCreated(savedInstanceState);
+	public void onResume(){
+		super.onResume();
 		Bundle args = this.getArguments();
 		if(hasNews()){
 			showArticle(args.getInt(NEWS_INDEX));

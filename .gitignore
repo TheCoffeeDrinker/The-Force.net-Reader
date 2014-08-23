@@ -2,3 +2,5 @@
 .classpath
 .settings/org.eclipse.jdt.core.prefs
 project.properties
+
+gen/
