@@ -41,6 +41,7 @@ public class ArticleFragment extends Fragment{
 	private WebView articleWV; //webview that will display the news article
 	private ShareActionProvider shareAction;
 	private final static String NEWS_INDEX = "Index of the selected news";//the reference is the list
+	private final static String NEWS = "Selected News";
 	
 	public static ArticleFragment newInstance(int articleIndex){
 		ArticleFragment fragment = new ArticleFragment();
@@ -52,6 +53,14 @@ public class ArticleFragment extends Fragment{
 		return fragment;
 	}
 	
+	public static ArticleFragment newInstance(FeedNews news) {
+		ArticleFragment fragment = new ArticleFragment();
+		Bundle args = new Bundle();
+		args.putSerializable(NEWS, news);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
      	return inflater.inflate(R.layout.article_empty, null);
     }
@@ -59,9 +68,13 @@ public class ArticleFragment extends Fragment{
     
 	public void onResume(){
 		super.onResume();
-		Bundle args = this.getArguments();
 		if(hasNews()){
-			showArticle(args.getInt(NEWS_INDEX));
+			Bundle args = this.getArguments();
+			if(args.containsKey(NEWS)){
+				showArticle((FeedNews)args.getSerializable(NEWS));
+			}else{
+				showArticle(args.getInt(NEWS_INDEX));
+			}
 		}
 	}
     
@@ -84,6 +97,17 @@ public class ArticleFragment extends Fragment{
    	 * every news
    	 */
     public void showArticle(int index){
+    	initArticleView();
+    	NewsReaderContext context =  NewsReaderContext.getInstance(getActivity()); 
+    	List<FeedNews> newsList = context.getNewsRetrieved();
+    	FeedNews newsToShow = newsList.get(index); 
+    	if(Parser.Util.isNetworkAvailable(getActivity())){
+    		ArticleLoader HTMLloaderTask = new ArticleLoader();
+    		HTMLloaderTask.execute(newsToShow);
+    	}
+    }
+    
+    private void initArticleView(){
     	if(getView().getTag()==null){
     		LayoutInflater inflater = getLayoutInflater(getArguments());
     		FrameLayout fragView = (FrameLayout) getView();
@@ -98,12 +122,13 @@ public class ArticleFragment extends Fragment{
 		WebSettings settings = articleWV.getSettings();
 		settings.setJavaScriptEnabled(true);
 		settings.setPluginState(WebSettings.PluginState.ON);
-    	NewsReaderContext context =  NewsReaderContext.getInstance(getActivity()); 
-    	List<FeedNews> newsList = context.getNewsRetrieved();
-    	FeedNews newsToShow = newsList.get(index); 
+    }
+    
+    public void showArticle(FeedNews news){
+    	initArticleView();
     	if(Parser.Util.isNetworkAvailable(getActivity())){
     		ArticleLoader HTMLloaderTask = new ArticleLoader();
-    		HTMLloaderTask.execute(newsToShow);
+    		HTMLloaderTask.execute(news);
     	}
     }
     
@@ -180,7 +205,7 @@ public class ArticleFragment extends Fragment{
 	 */
 	private boolean hasNews(){
 		Bundle args = this.getArguments();
-		return args!= null && args.containsKey(NEWS_INDEX);
+		return args!= null && (args.containsKey(NEWS_INDEX) || args.containsKey(NEWS));
 	}
 	
 
@@ -191,6 +216,8 @@ public class ArticleFragment extends Fragment{
 		shareAction=(ShareActionProvider)item.getActionProvider();
 		
 	}
+
+
 	
 	
 	

@@ -25,6 +25,7 @@ import android.widget.Button;
 public class ArticleActivity extends FragmentActivity {
 	public static final String NEWS_TO_UPDATE_EXTRA_KEY="News to update on the list";
 	private static final int NO_NEWS_INDEX = -1;
+	private FeedNews news;
 	
 	
 	public void onCreate (Bundle savedInstanceState){
@@ -56,9 +57,17 @@ public class ArticleActivity extends FragmentActivity {
 		PagerAdapter articleAdapter = new PagerAdapter(getSupportFragmentManager());
 		scrollPager.setAdapter(articleAdapter);
 		//retrieve the index of the selected news from the intent than launch this activity, to handle the adapter
-		int newsSelected=getIntent().getIntExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY,NO_NEWS_INDEX);
-		if(newsSelected != NO_NEWS_INDEX){
-			scrollPager.setCurrentItem(newsSelected);
+		
+		Intent intent = getIntent();
+		if(intent.hasExtra(NewsListActivity.NEWS_INDEX_TO_SHOW_EXTRA_KEY)){
+			int newsSelected=getIntent().getIntExtra(NewsListActivity.NEWS_INDEX_TO_SHOW_EXTRA_KEY,NO_NEWS_INDEX);
+			if(newsSelected != NO_NEWS_INDEX){
+				scrollPager.setCurrentItem(newsSelected);
+			}
+		}else{
+			if(intent.hasExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY)){
+				this.news = (FeedNews) intent.getSerializableExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY);
+			}
 		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
@@ -85,7 +94,8 @@ public class ArticleActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int index) {
-			ArticleFragment articleFrag = ArticleFragment.newInstance(index);
+			ArticleFragment articleFrag = ArticleActivity.this.news==null ? ArticleFragment.newInstance(index):
+				 ArticleFragment.newInstance(ArticleActivity.this.news);
 			return articleFrag;
 		}
 
