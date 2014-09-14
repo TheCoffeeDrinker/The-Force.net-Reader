@@ -1,6 +1,7 @@
 package com.thecoffeedrinker.theforcereader.newsmanager;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -16,7 +17,7 @@ import com.thecoffeedrinker.theforcereader.documentprocessor.HTMLDocumentExtract
  * @author carlo
  *
  */
-public class FeedNews{
+public class FeedNews implements Serializable{
 	private String mTitle;
 	private String mDescription;
 	private URL newsUrl;

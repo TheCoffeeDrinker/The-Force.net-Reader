@@ -75,8 +75,7 @@ public class LatestNewsRetrService extends IntentService {
 					latestNewsFetched.add(new FeedNews(newsItem));
 					if(latestNewsFetched.size()==1){
 						//use the first news title to send a notification to the user (according to his preferences)
-						String topTitle = lastItemsFetched.get(0).get(NewsReaderContext.ELEMENTS_TO_READ_FROM_FEED[0]);
-						checkNotification(topTitle);
+						checkNotification(lastItemsFetched.get(0));
 					}
 				}
 			}else{
@@ -97,17 +96,18 @@ public class LatestNewsRetrService extends IntentService {
 	 * send a notification ( it is the case ) to send a notification about the lastes news to the user
 	 * @param topNews the news that should be notified
 	 */
-	private void checkNotification(String topNews){
+	private void checkNotification(Item topItemNews){
+		FeedNews topNews = new FeedNews(topItemNews);
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean notificationEnabled = settings.getBoolean(SettingsActivity.KEY_SETTING_NOTIFICATION_ENABLED, true);
 		if(notificationEnabled){
 			if(lastTitleNotified==null || lastTitleNotified.isEmpty()){
-				lastTitleNotified=topNews;
+				lastTitleNotified=topNews.getTitle();
 			}else{
 				//if the titles are different, send the notification
-				if(!topNews.equals(lastTitleNotified) ){
+				if(!topNews.getTitle().equals(lastTitleNotified) ){
 					notifyNews(topNews);
-					lastTitleNotified = topNews;
+					lastTitleNotified = topNews.getTitle();
 				}
 			}
 		}
@@ -117,16 +117,16 @@ public class LatestNewsRetrService extends IntentService {
 	 * Send the notification to the screen of the user
 	 * @param title The notification title
 	 */
-	private void notifyNews(String title) {
+	private void notifyNews(FeedNews news) {
 		NotificationManager notManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		Builder notificationBuilder=new NotificationCompat.Builder(this);
 		Intent showArticleIntent=new Intent(this,ArticleActivity.class);
-		showArticleIntent.putExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY, 0);
+		showArticleIntent.putExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY, news);
 		PendingIntent showArtPendInt=PendingIntent.getActivity(this, 0, showArticleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		notificationBuilder.setAutoCancel(true)
 			.setContentIntent(showArtPendInt)
 			.setContentTitle(getString(R.string.app_name))
-			.setContentText(title)
+			.setContentText(news.getTitle())
 			.setWhen(System.currentTimeMillis())
 			.setSmallIcon(R.drawable.ic_stat_notification)
 			.setDefaults(Notification.DEFAULT_SOUND);

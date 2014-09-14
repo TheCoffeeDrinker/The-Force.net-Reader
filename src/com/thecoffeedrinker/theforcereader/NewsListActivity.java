@@ -27,7 +27,8 @@ import android.widget.ListView;
  *
  */
 public class NewsListActivity extends FragmentActivity implements NewsListFragment.OnNewsSelectedListener{
-	public static final String NEWS_TO_SHOW_EXTRA_KEY="News selected by the User";
+	public static final String NEWS_INDEX_TO_SHOW_EXTRA_KEY="Index of the news selected by the User";
+	public static final String NEWS_TO_SHOW_EXTRA_KEY = "News selected by the User";
 	private boolean dualScreen;//if the activity is displaying both the news list and the news
 	private List<FeedNews> newsRetrieved;
 	private NewsReaderContext context;
@@ -175,7 +176,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 		}else{
 			//start the activity to read the article if there is not the fragment into the layout
 			Intent readArticle=new Intent(this, ArticleActivity.class);
-			readArticle.putExtra(NEWS_TO_SHOW_EXTRA_KEY, newsIndex);
+			readArticle.putExtra(NEWS_INDEX_TO_SHOW_EXTRA_KEY, newsIndex);
 			startActivityForResult(readArticle,ARTICLE_ACTIVITY_REQ_CODE);
 		}
 	}
