@@ -74,7 +74,9 @@ public class ArticleFragment extends Fragment{
     
 	public void onPause(){
 		super.onPause();
-		articleWV.loadUrl("about:blank");
+		if(articleWV!=null){
+			articleWV.loadUrl("about:blank");
+		}
 	}
     
 	

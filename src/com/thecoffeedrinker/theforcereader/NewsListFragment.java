@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -25,7 +26,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.extras.listfragment.PullToRefreshListFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -39,7 +39,7 @@ import com.thecoffeedrinker.theforcereader.settings.SettingsActivity;
  * @author carlo
  *
  */
-public class NewsListFragment extends PullToRefreshListFragment{
+public class NewsListFragment extends ListFragment{
 	private OnNewsSelectedListener selectionListener;
 	private RelativeLayout listLayout;
 	private boolean removeTopView;
@@ -74,6 +74,7 @@ public class NewsListFragment extends PullToRefreshListFragment{
 		selectionListener.onNewsSelected(position-1);
 	}
 	
+
 	
 	public void onActivityCreated (Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);

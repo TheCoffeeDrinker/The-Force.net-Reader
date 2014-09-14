@@ -3,4 +3,5 @@
     <color name="Title">#09304E</color>
     <color name="Selected">#ff6800</color>
     <color name="unselected">#E9E9E9</color>
+    <color name="yellow">#FFCC00</color>
 </resources>

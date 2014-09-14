@@ -2,23 +2,21 @@ package com.thecoffeedrinker.theforcereader;
 
 import java.util.List;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.thecoffeedrinker.feedparser.Parser;
 import com.thecoffeedrinker.theforcereader.R;
 import com.thecoffeedrinker.theforcereader.newsmanager.LatestNewsRetrService;
 import com.thecoffeedrinker.theforcereader.newsmanager.FeedNews;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -39,7 +37,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     private int indexNewsSelected = NO_NEWS_SELECTED_INDEX;//used to update the news
     private final static int NO_NEWS_SELECTED_INDEX = -1;
     private final static String SELECTED_NEWS_INDEX_ON_SAVE_KEY="Index of the news Selected";
-	private PullToRefreshListView mPullListView;
+    private SwipeRefreshLayout swipeLayout;
     
     
     
@@ -76,6 +74,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     	Messenger newsMessenger=new Messenger(newsReceiver);
     	context.setActivityMessenger(newsMessenger);
     	listFragment=(NewsListFragment) getSupportFragmentManager().findFragmentById(R.id.news_list_fragment);
+    	
     	if(savedInstanceState!=null){
     		indexNewsSelected=savedInstanceState.getInt(SELECTED_NEWS_INDEX_ON_SAVE_KEY);
     	}
@@ -85,11 +84,33 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     	if(savedInstanceState!=null && dualScreen){
     		onNewsSelected(indexNewsSelected);
     	}
-        mPullListView = (PullToRefreshListView) listFragment.getPullToRefreshListView();
-		mPullListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
-
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+    	
+    	swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
 				refresh();
+			}
+		});
+        swipeLayout.setColorScheme(R.color.yellow, 
+                android.R.color.holo_orange_light, 
+                android.R.color.holo_orange_dark, 
+                android.R.color.holo_red_light);
+        
+        listFragment.getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem == 0)
+                	swipeLayout.setEnabled(true);
+                else
+                	swipeLayout.setEnabled(false);
 			}
 		});
     }
@@ -127,6 +148,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     	public void handleMessage(Message message) {
 			if(message.what==RESULT_OK){
 				fillList();
+				swipeLayout.setRefreshing(false);
 			}else{ 
 				FragmentTransaction reloadTransaction=NewsListActivity.this.getSupportFragmentManager().beginTransaction();
 				reloadTransaction.detach(listFragment);
@@ -139,7 +161,6 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 
 	
 	private void fillList(){
-		if(mPullListView!=null) mPullListView.onRefreshComplete();
 		newsRetrieved=context.getNewsRetrieved();
 		if(listFragment!=null)listFragment.loadList(newsRetrieved,indexNewsSelected);
 	}

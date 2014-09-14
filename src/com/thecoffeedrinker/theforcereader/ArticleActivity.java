@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -95,6 +96,9 @@ public class ArticleActivity extends FragmentActivity {
 				//if no other news are available avoid swiping.
 				return 1;
 			}else{
+				if(newsList.get(0).equals(newsList.get(1))){
+					return 1;
+				}
 				return newsList.size();
 			}
 		}
