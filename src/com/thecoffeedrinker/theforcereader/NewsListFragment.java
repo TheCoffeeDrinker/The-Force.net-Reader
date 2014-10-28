@@ -71,7 +71,7 @@ public class NewsListFragment extends ListFragment{
 			selectedItem = position-1;
 		}
 		//notify the selection to the activity
-		selectionListener.onNewsSelected(position-1);
+		selectionListener.onNewsSelected(position);
 	}
 	
 
