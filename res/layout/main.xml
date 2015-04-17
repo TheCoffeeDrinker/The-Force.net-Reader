@@ -8,9 +8,8 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent">
 
-    	    <fragment
-		    	android:id="@+id/news_list_fragment"
-		        android:name="com.thecoffeedrinker.theforcereader.NewsListFragment"
+    	    <FrameLayout
+		    	android:id="@+id/news_list_fragment"  
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"/>
 

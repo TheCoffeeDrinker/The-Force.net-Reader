@@ -11,11 +11,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" 
         android:gravity="center">
-            <LinearLayout 
-                android:layout_width="wrap_content" 
-                android:layout_height="wrap_content" 
-                android:orientation="horizontal" 
-                android:id="@+id/disconn_message">
+
   		
 	  			<ImageView 
 	  			    android:layout_height="55dp" 
@@ -29,11 +25,10 @@
   				    android:gravity="center" 
   				    android:layout_width="wrap_content" 
   				    android:textColor="@android:color/black" 
-  				    android:id="@+id/unConnected_message" 
+  				    android:id="@+id/error_message" 
   					android:layout_height="wrap_content" 
-  					android:text="@string/unconnected_message" android:layout_gravity="bottom" android:layout_marginLeft="5dp" 
-  					android:layout_marginBottom="6dp"/>
-  			</LinearLayout>
+  					android:layout_margin="10dp"
+  					android:text="@string/file_not_found_message"/>
 
 	  	<Button
 	  	    android:id="@+id/connect_button"

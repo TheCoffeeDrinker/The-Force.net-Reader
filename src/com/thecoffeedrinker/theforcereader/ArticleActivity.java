@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +34,7 @@ public class ArticleActivity extends FragmentActivity {
 			initArticleActivity();
 		}else{
 			//if there is no connection load the views to reconnect
-			super.setContentView(R.layout.no_connection);
+			super.setContentView(R.layout.message);
         	Button connectButton = (Button) findViewById(R.id.connect_button);
         	connectButton.setOnClickListener(new View.OnClickListener() {
 				

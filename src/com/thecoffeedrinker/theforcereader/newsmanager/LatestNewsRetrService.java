@@ -28,7 +28,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 /**
  * Service to retrieve the news. It will be periodically run and send notification of new news if the user selected this option;
@@ -40,7 +39,11 @@ public class LatestNewsRetrService extends IntentService {
     private final static String SERVICE_NAME="List News Retriever";
     public final static String EXTRA_NEWS_LIST="News List retreived";
     public static final String EXTRA_SERVICE_RESULT = "Service result";
+	public static final String EXTRA_PROBLEM_OCCURRED = "Problem occurred";
     private static String lastTitleNotified;
+    public final static int PROBLEM_NONE=0;
+    public final static int PROBLEM_IO=1;
+    public final static int PROBLEM_XMLPARSER=2;
 
     public LatestNewsRetrService() {
 		super(SERVICE_NAME);
@@ -51,6 +54,7 @@ public class LatestNewsRetrService extends IntentService {
 		NewsReaderContext context=NewsReaderContext.getInstance(getApplication());
 		List<Item> lastItemsFetched=null;
 		ArrayList<FeedNews> latestNewsFetched = null;
+		int retrProblem = PROBLEM_NONE;
 		if(Parser.Util.isNetworkAvailable(context)){
 			//we only process a part of the feed, because the user would not be intereted in really old news and to make the
 			//application faster
@@ -58,9 +62,9 @@ public class LatestNewsRetrService extends IntentService {
 			try {
 				lastItemsFetched=newsParser.parse(NewsReaderContext.ELEMENTS_TO_READ_FROM_FEED);
 			} catch (XmlPullParserException e) {
-				Log.e(LatestNewsRetrService.class.getCanonicalName(), e.getMessage(),e);
+				retrProblem = PROBLEM_XMLPARSER;
 			} catch (IOException e) {
-				Log.e(LatestNewsRetrService.class.getCanonicalName(), e.getMessage(),e);
+				retrProblem = PROBLEM_IO;
 			}
 		}
 		int result=0;
@@ -89,6 +93,7 @@ public class LatestNewsRetrService extends IntentService {
 		Intent broadcastIntent=new Intent(NewsReaderContext.BROADCAST_INTENT_ACTION);
 		broadcastIntent.putExtra(EXTRA_SERVICE_RESULT, result);
 		broadcastIntent.putExtra(EXTRA_NEWS_LIST, latestNewsFetched);
+		broadcastIntent.putExtra(EXTRA_PROBLEM_OCCURRED, retrProblem);
 		broadcastManager.sendBroadcast(broadcastIntent);
 	}
 	

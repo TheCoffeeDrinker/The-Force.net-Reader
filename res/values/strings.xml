@@ -13,4 +13,6 @@
     <string name="run_startup_setting_title">Run at startup</string>
     <string name="run_startup_setting_summary">Run automatically the application every time the device is switched on</string>
 	<string name="settings_menu_label">Settings</string>
+	<string name="file_not_found_message">The feed rss file is not found. Please contact the guys of the force.net to get this fixed.</string>
+	<string name="invalid_xml_message">The feed rss file is not valid. Please contact the guys of the force.net to get this fixed.</string>
 </resources>

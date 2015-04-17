@@ -77,16 +77,20 @@ public class NewsReaderContext extends ContextWrapper{
 	public class ServiceResultReceiver extends BroadcastReceiver{	
     	
 		public void onReceive(Context context, Intent intent) {
-    		int result=intent.getIntExtra(LatestNewsRetrService.EXTRA_SERVICE_RESULT, Activity.RESULT_CANCELED);
-			if(result==Activity.RESULT_OK){
+    		int result=intent.getIntExtra(LatestNewsRetrService.EXTRA_SERVICE_RESULT, Activity.RESULT_OK);
+    		Message resultToSendToActivity=Message.obtain();
+			
+    		if(result==Activity.RESULT_OK){
 				Bundle serviceBundle=intent.getExtras();
 				ArrayList<FeedNews> retrievedNews = (ArrayList<FeedNews>) serviceBundle.getSerializable(LatestNewsRetrService.EXTRA_NEWS_LIST);
 				if(!retrievedNews.isEmpty()){
 					newsList = retrievedNews;
 				}
+			}else{
+				int problemOccurred = intent.getIntExtra(LatestNewsRetrService.EXTRA_PROBLEM_OCCURRED, LatestNewsRetrService.PROBLEM_NONE);
+				resultToSendToActivity.arg1 = problemOccurred;
 			}
-	   		Message resultToSendToActivity=Message.obtain();
-			resultToSendToActivity.what=result;
+    		resultToSendToActivity.what=result;
 			if(readerMessenger!=null){
 				try {
 					readerMessenger.send(resultToSendToActivity);

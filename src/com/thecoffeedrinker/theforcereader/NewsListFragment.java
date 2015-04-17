@@ -44,6 +44,11 @@ public class NewsListFragment extends ListFragment{
 	private RelativeLayout listLayout;
 	private boolean removeTopView;
 	private int selectedItem=-1;
+	private ViewCreated viewEditable;
+	
+	interface ViewCreated{
+		public void onViewCreatedListener();
+	}
 	
 	public void onAttach(Activity activity){
 		super.onAttach(activity);
@@ -55,6 +60,8 @@ public class NewsListFragment extends ListFragment{
 	public interface OnNewsSelectedListener{
 		public void onNewsSelected(int index);//single screen
 	}
+	
+	
 	
 	public void onListItemClick(ListView l, View v, int position, long id){
 		if(((NewsListActivity)getActivity()).isSplitScreen()){
@@ -79,6 +86,13 @@ public class NewsListFragment extends ListFragment{
 	public void onActivityCreated (Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
+		if(viewEditable!=null){
+			viewEditable.onViewCreatedListener();
+		}
+	}
+	
+	public void setOnViewCreated(ViewCreated viewCreated){
+		this.viewEditable = viewCreated;
 	}
 	
 	

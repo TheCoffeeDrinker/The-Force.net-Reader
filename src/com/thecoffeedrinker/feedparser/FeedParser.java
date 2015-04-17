@@ -17,6 +17,7 @@ public class FeedParser extends Parser{
 	private final static String ITEM="item";
 	protected List<Item> itemList;
 	private int maxItems;
+	private Exception exceptionOccurred;
 	
 	public FeedParser(String url){
 		super(url);
@@ -41,6 +42,13 @@ public class FeedParser extends Parser{
 				Log.e(FeedParser.class.getCanonicalName(), e.getMessage(), e);
 			}
 		}
+		if(exceptionOccurred!=null){
+			if(exceptionOccurred instanceof IOException){
+				throw new IOException(exceptionOccurred);
+			}else{
+				throw new XmlPullParserException(exceptionOccurred.getMessage());
+			}
+		}
 		return itemList;
 	}
 	
@@ -60,11 +68,14 @@ public class FeedParser extends Parser{
 				parser.setInput(is,null);
 				parser.nextTag();
 				readFeed(parser,tagToRead);
-				is.close();
 			} catch (IOException e) {
-				Log.e(FeedParser.class.getCanonicalName(), e.getMessage(), e);
+				exceptionOccurred = e;
 			} catch (XmlPullParserException e) {
-				Log.e(FeedParser.class.getCanonicalName(), e.getMessage(), e);
+				exceptionOccurred = e;
+			}finally{
+				synchronized (itemList){
+					itemList.notify();
+				}
 			}
 		}
 		
@@ -88,10 +99,10 @@ public class FeedParser extends Parser{
 		
 		private void readFeed(XmlPullParser parser, String[] tag) throws XmlPullParserException, IOException {
 			/**
-			 * 1) Salta tutta l'intestazione finchè non arrivi al primo tag item
-			 * 2) A questo punto, finchè non è stato trovato il tag item di chiusura analizza tutti i tag per 
+			 * 1) Salta tutta l'intestazione finchÔøΩ non arrivi al primo tag item
+			 * 2) A questo punto, finchÔøΩ non ÔøΩ stato trovato il tag item di chiusura analizza tutti i tag per 
 			 * mettere via via in un oggetto item;
-			 * 3) Continua a ciclare finchè non si arriva alla chiudura del tag channel.
+			 * 3) Continua a ciclare finchÔøΩ non si arriva alla chiudura del tag channel.
 			 */
 			parser.require(XmlPullParser.START_TAG, null, "rss");
 			parser.nextTag();
@@ -105,7 +116,7 @@ public class FeedParser extends Parser{
 			//Now that we header is over we can start to save every item
 			List<String> tagToRead =  Arrays.asList(tag);
 			Item feedItem = new Item(); 
-			while(parser.next()!=XmlPullParser.END_DOCUMENT){//finchè non termina il documento
+			while(parser.next()!=XmlPullParser.END_DOCUMENT){//finchÔøΩ non termina il documento
 				if(maxItems!=0 && itemList.size()==maxItems){
 					break;
 				}
@@ -127,10 +138,8 @@ public class FeedParser extends Parser{
 				}
 						
 			}
-			synchronized (itemList){
-				itemList.notify();
-			}
 		}
+		
 		
 		private String getSelectedElemContent(XmlPullParser parser) throws IOException, XmlPullParserException {
 		    String result = "";

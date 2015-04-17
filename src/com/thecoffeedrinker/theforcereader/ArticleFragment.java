@@ -25,11 +25,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
-import android.widget.TextView;
 
 /**
  * Fragment to show a news article previously selected; here using the menu it will be possible to share the news.
