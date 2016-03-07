@@ -34,7 +34,7 @@ import android.util.Log;
 public class NewsReaderContext extends ContextWrapper{
 	private static NewsReaderContext readerContext; 
 	private List<FeedNews> newsList;
-	public final static String FEED_URL="http://www.theforce.net/rss/theforcenet.rss";
+	public final static String FEED_URL="http://theforce.net/rss/theforcenet.rss";
     private final static long REFRESH_INTERVAL=900000;
     public final static String[] ELEMENTS_TO_READ_FROM_FEED={"title","description","link"};
 	private static ServiceResultReceiver resultReceiver;
