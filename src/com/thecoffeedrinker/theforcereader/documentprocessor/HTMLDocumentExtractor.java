@@ -33,7 +33,7 @@ public class HTMLDocumentExtractor {
 	public String getArticle(){
 		Element articleDiv = pageSource.getFirstElementByClass("news-teaser");
 		if(articleDiv==null){
-			return "<H1>The article is not properly written; please try again later</H1>";
+			return "<H1 style='margin:8px'>The article is not available; please try again later</H1>";
 		}
 		return articleDiv.toString();
 	}
