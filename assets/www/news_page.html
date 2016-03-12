@@ -19,15 +19,6 @@
 			}
 			
 			$("div.news-teaser-footer").empty();
-	        //fix the youtube url putting the http
-	        var embeddedVideos = $("iframe");
-	        var httpPrefix = "http:";
-	        for(var i=0;i<embeddedVideos.length;i++){
-	            var partialVideoUrl = $(embeddedVideos[i]).attr("src");
-	            if(!partialVideoUrl.startsWith(httpPrefix)){
-	            	$(embeddedVideos[i]).attr("src",httpPrefix+partialVideoUrl);
-	            }
-	        }
 	        //fix the related links putting the right domain
 	        var relatedLinks = $(".related-story a");
 	        for(var i=0;i<relatedLinks.length;i++){
