@@ -6,6 +6,7 @@ import java.util.List;
 import com.thecoffeedrinker.feedparser.Parser;
 import com.thecoffeedrinker.theforcereader.newsmanager.FeedNews;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -100,7 +101,7 @@ public class ArticleFragment extends Fragment{
     	NewsReaderContext context =  NewsReaderContext.getInstance(getActivity()); 
     	List<FeedNews> newsList = context.getNewsRetrieved();
     	FeedNews newsToShow = newsList.get(index); 
-    	if(Parser.Util.isNetworkAvailable(getActivity())){
+    	if(getActivity()!=null && Parser.Util.isNetworkAvailable(getActivity())){
     		ArticleLoader HTMLloaderTask = new ArticleLoader();
     		HTMLloaderTask.execute(newsToShow);
     	}
@@ -156,7 +157,8 @@ public class ArticleFragment extends Fragment{
 		
 		protected String doInBackground(FeedNews... arg0) {
 			newsToShow=arg0[0];
-			if(Parser.Util.isNetworkAvailable(ArticleFragment.this.getActivity())){
+			Activity articleActivity = ArticleFragment.this.getActivity();
+			if(articleActivity!=null && Parser.Util.isNetworkAvailable(articleActivity)){
 				try {
 					String htmlNewsBody = newsToShow.getHTMLArticle();
 					return htmlNewsBody;
@@ -168,7 +170,7 @@ public class ArticleFragment extends Fragment{
 		
 		protected void onPostExecute(String htmlNewsBody){
 			
-			if(htmlNewsBody!=null){ 
+			if(htmlNewsBody!=null && getActivity()!=null){ 
 				articleWV.addJavascriptInterface(htmlNewsBody, JS_OBJECT_NAME);
 				//load the local page; inside that put the news content using an object
 				articleWV.loadUrl("file:///android_asset/www/news_page.html");
