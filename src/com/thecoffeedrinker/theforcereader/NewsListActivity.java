@@ -211,12 +211,11 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 			}
 			
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                	swipeLayout.setEnabled(true);
-                else
-                	swipeLayout.setEnabled(false);
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				ListView guidesList = listFragment.getListView();
+				int topRowVerticalPosition = (guidesList == null || guidesList.getChildCount() == 0) ? 
+						        0 : guidesList.getChildAt(0).getTop();
+				swipeLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
 			}
 		});
 	}
