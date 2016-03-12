@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -139,18 +140,20 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     @Override
     protected void onResume(){
     	super.onResume();
-    	if(context.getNewsRetrieved()==null) refresh();
-    	fillList();
+    	if(context.getNewsRetrieved()==null){
+    		refresh();
+    	}else{
+    		if(listFragment.isListEmpty()){
+    			fillList();
+    		}
+    	}
     }
     
 	protected void refresh(){
 		startService(new Intent(this, LatestNewsRetrService.class));
-		
 	}
 	
 
-    
-	
 	
 	class NewsHandler extends Handler{	
     	

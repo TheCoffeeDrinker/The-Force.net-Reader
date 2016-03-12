@@ -108,6 +108,10 @@ public class NewsListFragment extends ListFragment{
 		}
 	}
 	
+	public boolean isListEmpty(){
+		return getListAdapter()==null || getListAdapter().getCount()==0;
+	}
+	
 	/**
 	 * Array Adapter for the news list
 	 * @author carlo
