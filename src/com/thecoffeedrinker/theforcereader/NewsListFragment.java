@@ -75,7 +75,7 @@ public class NewsListFragment extends ListFragment{
 			}
 			//hightlight the element
 			v.setBackgroundColor(getResources().getColor(R.color.Selected));
-			selectedItem = position-1;
+			selectedItem = position;
 		}
 		//notify the selection to the activity
 		selectionListener.onNewsSelected(position);
