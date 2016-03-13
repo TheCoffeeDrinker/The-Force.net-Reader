@@ -15,4 +15,5 @@
 	<string name="settings_menu_label">Settings</string>
 	<string name="file_not_found_message">The feed rss file is not found. Please contact the guys of the force.net to get this fixed.</string>
 	<string name="invalid_xml_message">The feed rss file is not valid. Please contact the guys of the force.net to get this fixed.</string>
+	<string name="empty_article_message">Touch a news to read it</string>
 </resources>

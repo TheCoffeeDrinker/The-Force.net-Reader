@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="Title">#09304E</color>
-    <color name="Selected">#ff6800</color>
+    <color name="Selected">#FF6600</color>
     <color name="unselected">#F8F8F8</color>
     <color name="yellow">#FFCC00</color>
+    <color name="backgrond">#CCCCCC</color>
 </resources>
