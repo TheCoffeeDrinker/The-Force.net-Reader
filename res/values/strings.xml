@@ -11,7 +11,7 @@
     <string name="notification_setting_summary">Send a notification every time a new news is published</string>
     <string name="dialog_connection_title">Connection</string>
     <string name="run_startup_setting_title">Run at startup</string>
-    <string name="run_startup_setting_summary">Run automatically the application every time the device is switched on</string>
+    <string name="run_startup_setting_summary">Run automatically the application on the background every time the device is switched on, in order to get notifications</string>
 	<string name="settings_menu_label">Settings</string>
 	<string name="file_not_found_message">The feed rss file is not found. Please contact the guys of the force.net to get this fixed.</string>
 	<string name="invalid_xml_message">The feed rss file is not valid. Please contact the guys of the force.net to get this fixed.</string>
