@@ -16,4 +16,26 @@
 	<string name="file_not_found_message">The feed rss file is not found. Please contact the guys of the force.net to get this fixed.</string>
 	<string name="invalid_xml_message">The feed rss file is not valid. Please contact the guys of the force.net to get this fixed.</string>
 	<string name="empty_article_message">Touch a news to read it</string>
+	<string-array name="setting_refresh_options">
+	    <item>1 minute</item>
+	    <item>5 minutes</item>
+	    <item>15 minutes</item>
+	    <item>30 minutes</item>
+	    <item>1 hour</item>
+	    <item>2 hours</item>
+	    <item>1 day</item>
+	</string-array>
+	<string-array name="setting_refresh_options_values">
+	    <item>60000</item>
+	    <item>300000</item>
+	    <item>900000</item>
+	    <item>1800000</item>
+	    <item>3600000</item>
+	    <item>7200000</item>
+	    <item>86400000</item>
+	</string-array>
+	<string name="setting_refresh_default_option">900000</string>
+	<string name="setting_preference_static_refresh_time_key">setting_refresh_time_static</string>
+	<string name="setting_preference_refresh_time_title">Update frequency</string>
+	<string name="setting_preference_refresh_time_summary">Select how often the app will check if there are new news</string>
 </resources>

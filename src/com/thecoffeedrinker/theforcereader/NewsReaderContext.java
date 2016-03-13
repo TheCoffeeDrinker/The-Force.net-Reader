@@ -15,12 +15,14 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.LruCache;
@@ -34,21 +36,20 @@ import android.util.Log;
 public class NewsReaderContext extends ContextWrapper{
 	private static NewsReaderContext readerContext; 
 	private List<FeedNews> newsList;
-	public final static String FEED_URL="http://theforce.net/rss/theforcenet.rss";
-    private final static long REFRESH_INTERVAL=900000;
+	public final static String FEED_URL="https://dl.dropboxusercontent.com/u/75677590/theforcenet.rss";
     public final static String[] ELEMENTS_TO_READ_FROM_FEED={"title","description","link"};
 	private static ServiceResultReceiver resultReceiver;
 	public final static String BROADCAST_INTENT_ACTION="com.thecoffeedrinker.theforcereader.NEWS_BROADCAST";
 	public final static int MAX_LENGTH_FEED=16;
 	private Messenger readerMessenger;
-	
+	private PendingIntent pendingService;
     
 	private NewsReaderContext(Context context){
 		super(context);
 		resultReceiver=new ServiceResultReceiver();
 		LocalBroadcastManager locBroadcastManager=LocalBroadcastManager.getInstance(this);
 		locBroadcastManager.registerReceiver(resultReceiver, new IntentFilter(BROADCAST_INTENT_ACTION));
-		startRetrievalService(this);
+		startRetrievalService();
 		
 	}
 	
@@ -106,12 +107,22 @@ public class NewsReaderContext extends ContextWrapper{
      * Start the periodical news retrieval service
      * @param ctx application context
      */
-	protected static void startRetrievalService(Context ctx) {
-		AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-		Intent serviceIntent=new Intent(ctx, LatestNewsRetrService.class);
-		PendingIntent pendingService = PendingIntent.getService(ctx, 0, serviceIntent, 
+	protected void startRetrievalService() {
+		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent serviceIntent=new Intent(this, LatestNewsRetrService.class);
+		pendingService = PendingIntent.getService(this, 0, serviceIntent, 
 				PendingIntent.FLAG_CANCEL_CURRENT);
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), REFRESH_INTERVAL, pendingService);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		String strRefreshOption = settings.getString(getString(R.string.setting_preference_static_refresh_time_key),getString(
+				(R.string.setting_refresh_default_option)));
+		long refreshIntervalMillis = Long.valueOf(strRefreshOption);
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), refreshIntervalMillis, pendingService);
+	}
+	
+	public void restartPeriodicRetrievalService(){
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.cancel(pendingService);
+		startRetrievalService();
 	}
 	
 	

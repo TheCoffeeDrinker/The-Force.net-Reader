@@ -11,5 +11,13 @@
         android:title="@string/run_startup_setting_title"
         android:summary="@string/run_startup_setting_summary"
         android:defaultValue="true" /> 
+        
+    <ListPreference
+            android:key="@string/setting_preference_static_refresh_time_key"
+            android:title="@string/setting_preference_refresh_time_title"
+            android:summary="@string/setting_preference_refresh_time_summary"
+            android:entries="@array/setting_refresh_options"
+            android:entryValues="@array/setting_refresh_options_values"
+            android:defaultValue="@string/setting_refresh_default_option"/>
 
 </PreferenceScreen>

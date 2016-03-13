@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 /**
  * Receiver to run the application when the device is switched on
@@ -21,7 +22,9 @@ public class BootReceiver extends BroadcastReceiver {
 		//get the preference to determine if the service has to be started or not
 		boolean runStartUp = settings.getBoolean(SettingsActivity.KEY_SETTING_RUN_BOOT, true);
 		if(runStartUp){
-			NewsReaderContext.startRetrievalService(context);
+			NewsReaderContext newsReaderContext = NewsReaderContext.getInstance(context);
+			//avoid multiple run of the same service
+			newsReaderContext.restartPeriodicRetrievalService();
 		}
 	}
 
