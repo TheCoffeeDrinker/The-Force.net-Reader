@@ -36,7 +36,7 @@ import android.util.Log;
 public class NewsReaderContext extends ContextWrapper{
 	private static NewsReaderContext readerContext; 
 	private List<FeedNews> newsList;
-	public final static String FEED_URL="https://dl.dropboxusercontent.com/u/75677590/theforcenet.rss";
+	public final static String FEED_URL="http://www.theforce.net/rss/theforcenet.rss";
     public final static String[] ELEMENTS_TO_READ_FROM_FEED={"title","description","link"};
 	private static ServiceResultReceiver resultReceiver;
 	public final static String BROADCAST_INTENT_ACTION="com.thecoffeedrinker.theforcereader.NEWS_BROADCAST";
