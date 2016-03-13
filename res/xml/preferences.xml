@@ -4,13 +4,13 @@
         android:key="pref_notification"
         android:title="@string/notification_setting_title"
         android:summary="@string/notification_setting_summary"
-        android:defaultValue="true" />
+        android:defaultValue="@bool/default_setting_notification" />
     
     <CheckBoxPreference
         android:key="pref_boot_start"
         android:title="@string/run_startup_setting_title"
         android:summary="@string/run_startup_setting_summary"
-        android:defaultValue="true" /> 
+        android:defaultValue="@bool/default_setting_boot_start" /> 
         
     <ListPreference
             android:key="@string/setting_preference_static_refresh_time_key"

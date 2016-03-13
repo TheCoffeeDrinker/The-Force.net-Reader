@@ -20,7 +20,8 @@ public class BootReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent arg1) {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		//get the preference to determine if the service has to be started or not
-		boolean runStartUp = settings.getBoolean(SettingsActivity.KEY_SETTING_RUN_BOOT, true);
+		boolean defaultBootRun = context.getResources().getBoolean(R.bool.default_setting_boot_start);
+		boolean runStartUp = settings.getBoolean(SettingsActivity.KEY_SETTING_RUN_BOOT, defaultBootRun);
 		if(runStartUp){
 			NewsReaderContext newsReaderContext = NewsReaderContext.getInstance(context);
 			//avoid multiple run of the same service

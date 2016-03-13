@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<bool name="default_setting_notification">false</bool>
+	<bool name="default_setting_boot_start">false</bool>
+</resources>
+
