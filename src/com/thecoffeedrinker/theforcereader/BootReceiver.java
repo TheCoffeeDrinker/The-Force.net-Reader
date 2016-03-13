@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -20,8 +21,10 @@ public class BootReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent arg1) {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		//get the preference to determine if the service has to be started or not
+		Resources resources = context.getResources();
+		String keySettingBootRun = resources.getString(R.string.setting_get_notification_key);
 		boolean defaultBootRun = context.getResources().getBoolean(R.bool.default_setting_boot_start);
-		boolean runStartUp = settings.getBoolean(SettingsActivity.KEY_SETTING_RUN_BOOT, defaultBootRun);
+		boolean runStartUp = settings.getBoolean(keySettingBootRun, defaultBootRun);
 		if(runStartUp){
 			NewsReaderContext newsReaderContext = NewsReaderContext.getInstance(context);
 			//avoid multiple run of the same service

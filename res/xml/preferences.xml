@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:key="pref_notification"
+        android:key="@string/setting_get_notification_key"
         android:title="@string/notification_setting_title"
         android:summary="@string/notification_setting_summary"
         android:defaultValue="@bool/default_setting_notification" />
     
     <CheckBoxPreference
-        android:key="pref_boot_start"
+        android:key="@string/setting_run_at_startup_key"
         android:title="@string/run_startup_setting_title"
         android:summary="@string/run_startup_setting_summary"
         android:defaultValue="@bool/default_setting_boot_start" /> 

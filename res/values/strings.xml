@@ -38,4 +38,6 @@
 	<string name="setting_preference_static_refresh_time_key">setting_refresh_time_static</string>
 	<string name="setting_preference_refresh_time_title">Update frequency</string>
 	<string name="setting_preference_refresh_time_summary">Select how often the app will check if there are new news</string>
+	<string name="setting_get_notification_key">pref_notification</string>
+	<string name="setting_run_at_startup_key">pref_boot_start</string>
 </resources>
