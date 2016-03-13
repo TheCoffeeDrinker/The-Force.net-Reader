@@ -9,23 +9,22 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:orientation="horizontal" >
-
+        
          <android.support.v4.widget.SwipeRefreshLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/swipe_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="0.4">
-
-            <fragment
-                android:id="@+id/news_list_fragment"
-                android:name="com.thecoffeedrinker.theforcereader.NewsListFragment"
-            	android:layout_width="wrap_content"
-            	android:layout_height="wrap_content" 
-                tools:layout="@android:layout/list_content" />
-            
-         </android.support.v4.widget.SwipeRefreshLayout>
-
+        
+        	<FrameLayout
+		    	android:id="@+id/news_list_fragment"  
+		        android:layout_width="0dp"
+		        android:layout_height="match_parent"
+		        android:layout_weight="0.4"/>
+        
+        </android.support.v4.widget.SwipeRefreshLayout>
+        
         <fragment
             android:id="@+id/article_fragment"
             android:name="com.thecoffeedrinker.theforcereader.ArticleFragment"
@@ -33,6 +32,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="0.6"
             android:background="@android:color/white" />
+
     </LinearLayout>
 
 </RelativeLayout>
