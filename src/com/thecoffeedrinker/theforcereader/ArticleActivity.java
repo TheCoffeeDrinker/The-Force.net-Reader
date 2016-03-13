@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Activity executed on the mobile or when the application is in portait mode for the tablets, to show a news content
@@ -30,11 +31,14 @@ public class ArticleActivity extends FragmentActivity {
 	
 	public void onCreate (Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if(Parser.Util.isNetworkAvailable(getApplicationContext())){
 			initArticleActivity();
 		}else{
 			//if there is no connection load the views to reconnect
 			super.setContentView(R.layout.message);
+			TextView messageText = (TextView) findViewById(R.id.error_message);
+			messageText.setText(R.string.unconnected_message);
         	Button connectButton = (Button) findViewById(R.id.connect_button);
         	connectButton.setOnClickListener(new View.OnClickListener() {
 				
@@ -69,7 +73,6 @@ public class ArticleActivity extends FragmentActivity {
 				this.news = (FeedNews) intent.getSerializableExtra(NewsListActivity.NEWS_TO_SHOW_EXTRA_KEY);
 			}
 		}
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem menuItem){       

@@ -143,7 +143,7 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
     	if(context.getNewsRetrieved()==null){
     		refresh();
     	}else{
-    		if(listFragment.isListEmpty()){
+    		if(listFragment!=null && listFragment.isListEmpty()){
     			fillList();
     		}
     	}
@@ -158,21 +158,22 @@ public class NewsListActivity extends FragmentActivity implements NewsListFragme
 	class NewsHandler extends Handler{	
     	
     	public void handleMessage(Message message) {
+    		swipeLayout.setRefreshing(false);
 			if(message.what==RESULT_OK){
 				fillList();
-				swipeLayout.setRefreshing(false);
 			}else{
-				if(message.arg1==LatestNewsRetrService.PROBLEM_NONE){
-					FragmentTransaction reloadTransaction=NewsListActivity.this.getSupportFragmentManager().beginTransaction();
-					reloadTransaction.detach(listFragment);
-					reloadTransaction.attach(listFragment);
-					reloadTransaction.commit();
-				}else{
-					if(message.arg1==LatestNewsRetrService.PROBLEM_IO){
+				switch(message.arg1){
+					case LatestNewsRetrService.PROBLEM_IO:
 						showMessageLayout(R.string.file_not_found_message);
-					}else{
+						break;
+					
+					case LatestNewsRetrService.PROBLEM_XMLPARSER:
 						showMessageLayout(R.string.invalid_xml_message);
-					}
+						break;
+					
+					case LatestNewsRetrService.PROBLEM_NO_CONNECTION:
+						showMessageLayout(R.string.unconnected_message);
+						break;
 				}
 			}
 		}

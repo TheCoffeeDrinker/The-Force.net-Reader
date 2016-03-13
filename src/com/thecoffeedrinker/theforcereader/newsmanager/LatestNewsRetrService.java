@@ -44,6 +44,7 @@ public class LatestNewsRetrService extends IntentService {
     public final static int PROBLEM_NONE=0;
     public final static int PROBLEM_IO=1;
     public final static int PROBLEM_XMLPARSER=2;
+    public final static int PROBLEM_NO_CONNECTION=3;
 
     public LatestNewsRetrService() {
 		super(SERVICE_NAME);
@@ -66,6 +67,8 @@ public class LatestNewsRetrService extends IntentService {
 			} catch (IOException e) {
 				retrProblem = PROBLEM_IO;
 			}
+		}else{
+			retrProblem = PROBLEM_NO_CONNECTION;
 		}
 		int result=0;
 		if(lastItemsFetched!=null){
@@ -93,7 +96,9 @@ public class LatestNewsRetrService extends IntentService {
 		Intent broadcastIntent=new Intent(NewsReaderContext.BROADCAST_INTENT_ACTION);
 		broadcastIntent.putExtra(EXTRA_SERVICE_RESULT, result);
 		broadcastIntent.putExtra(EXTRA_NEWS_LIST, latestNewsFetched);
-		broadcastIntent.putExtra(EXTRA_PROBLEM_OCCURRED, retrProblem);
+		if(retrProblem!=PROBLEM_NONE){
+			broadcastIntent.putExtra(EXTRA_PROBLEM_OCCURRED, retrProblem);
+		}
 		broadcastManager.sendBroadcast(broadcastIntent);
 	}
 	
