@@ -22,7 +22,7 @@ public class BootReceiver extends BroadcastReceiver {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		//get the preference to determine if the service has to be started or not
 		Resources resources = context.getResources();
-		String keySettingBootRun = resources.getString(R.string.setting_get_notification_key);
+		String keySettingBootRun = resources.getString(R.string.setting_run_at_startup_key);
 		boolean defaultBootRun = context.getResources().getBoolean(R.bool.default_setting_boot_start);
 		boolean runStartUp = settings.getBoolean(keySettingBootRun, defaultBootRun);
 		if(runStartUp){

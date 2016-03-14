@@ -110,7 +110,7 @@ public class LatestNewsRetrService extends IntentService {
 		FeedNews topNews = new FeedNews(topItemNews);
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean defaultNotificationSetting = getResources().getBoolean(R.bool.default_setting_notification);
-		String keySettingNotification = getString(R.string.setting_run_at_startup_key);
+		String keySettingNotification = getString(R.string.setting_get_notification_key);
 		boolean notificationEnabled = settings.getBoolean(keySettingNotification, defaultNotificationSetting);
 		if(notificationEnabled){
 			if(lastTitleNotified==null || lastTitleNotified.isEmpty()){
