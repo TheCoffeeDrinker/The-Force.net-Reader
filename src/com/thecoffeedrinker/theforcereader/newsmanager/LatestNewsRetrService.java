@@ -10,7 +10,6 @@ import com.thecoffeedrinker.theforcereader.ArticleActivity;
 import com.thecoffeedrinker.theforcereader.NewsListActivity;
 import com.thecoffeedrinker.theforcereader.NewsReaderContext;
 import com.thecoffeedrinker.theforcereader.R;
-import com.thecoffeedrinker.theforcereader.settings.SettingsActivity;
 import com.thecoffeedrinker.feedparser.FeedParser;
 import com.thecoffeedrinker.feedparser.Item;
 import com.thecoffeedrinker.feedparser.Parser;

@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
@@ -25,7 +24,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 
 /**
